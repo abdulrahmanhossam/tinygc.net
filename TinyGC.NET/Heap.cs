@@ -32,6 +32,16 @@ public class Heap
     private int _allocPosition;
 
     /// <summary>
+    /// Total objects allocated
+    /// </summary>
+    private int _totalObjects;
+
+    /// <summary>
+    /// Total objects freed
+    /// </summary>
+    private int _freedObjects;
+
+    /// <summary>
     /// All objects currently allocated.
     /// We track this so the GC knows what's in the heap.
     /// </summary>
@@ -44,6 +54,8 @@ public class Heap
     {
         _memory = new byte[HEAP_SIZE];
         _allocPosition = 0;
+        _totalObjects = 0;
+        _freedObjects = 0;
         Console.WriteLine($"[Heap] Initialized: {HEAP_SIZE / 1024}KB heap");
     }
 
@@ -78,6 +90,7 @@ public class Heap
     /// </summary>
     public void AddObject(GCObject obj)
     {
+        _totalObjects += 1;
         _objects.Add(obj);
     }
 
@@ -86,6 +99,7 @@ public class Heap
     /// </summary>
     public void RemoveObject(GCObject obj)
     {
+        _freedObjects += 1;
         _objects.Remove(obj);
     }
 
@@ -135,5 +149,6 @@ public class Heap
     public void PrintStats()
     {
         Console.WriteLine($"[Heap] Stats: {_allocPosition}/{HEAP_SIZE} bytes used, {_objects.Count} objects");
+        Console.WriteLine($"Total objects allocated: {_totalObjects}, Total objects freed: {_freedObjects}, Current objects in memory: {_objects.Count}");
     }
 }
