@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TinyGC;
+﻿namespace TinyGC;
 
 /// <summary>
 /// Program.cs - Demo showing how to use our GC
@@ -15,50 +13,46 @@ class Program
         Console.WriteLine("  TinyGC.NET - Educational GC Demo");
         Console.WriteLine("========================================\n");
 
-        RunDemo();
-
-        GC.Instance.Shutdown();
-    }
-
-    static void RunDemo()
-    {
-        Console.WriteLine("=== STEP 1: Allocate Objects ===\n");
-
-        // Allocate some objects
-        var obj1 = GC.Instance.New<MyData>();
-        obj1.Value = 42;
-        obj1.Name = "First Object";
-        Console.WriteLine($"obj1: Value={obj1.Value}, Name={obj1.Name}");
-
-        var obj2 = GC.Instance.New<MyData>();
-        obj2.Value = 100;
-        obj2.Name = "Second Object";
-        Console.WriteLine($"obj2: Value={obj2.Value}, Name={obj2.Name}");
-
-        Console.WriteLine("\n=== STEP 2: Statistics ===\n");
-        GC.Instance.PrintStats();
-
-        Console.WriteLine("\n=== STEP 3: Run GC ===\n");
-        // All objects still have roots, so none are garbage!
-        GC.Instance.Collect();
-        
-        Console.WriteLine("\n=== STEP 4: After GC ===\n");
-        GC.Instance.PrintStats();
-
-        Console.WriteLine("\n=== STEP 5: More Allocations ===\n");
-        
-        // Allocate more objects
-        for (int i = 0; i < 3; i++)
-        {
-            var temp = GC.Instance.New<MyData>();
-            temp.Value = i * 10;
-            temp.Name = $"Object {i}";
-            Console.WriteLine($"Allocated: {temp.Name}");
-        }
-
-        GC.Instance.Collect();
-        GC.Instance.PrintStats();
+        ShowMenu();
 
         Console.WriteLine("\n=== Demo Complete! ===");
+    }
+
+    static void ShowMenu()
+    {
+        Console.WriteLine("\n=== TinyGC.NET Menu ===");
+        Console.WriteLine("1. Allocate object");
+        Console.WriteLine("2. Run GC");
+        Console.WriteLine("3. View stats");
+        Console.WriteLine("4. Exit");
+        Console.Write("Enter choice: ");
+        bool validInput = Int32.TryParse(Console.ReadLine(), out int userInput);
+        if (validInput)
+        {
+            switch (userInput)
+            {
+                case 1:
+                    GC.Instance.AllocateObject();
+                    break;
+                case 2:
+                    // All objects still have roots, so none are garbage!
+                    GC.Instance.Collect();
+                    break;
+                case 3:
+                    GC.Instance.PrintStats();
+                    break;
+                case 4:
+                    GC.Instance.Shutdown();
+                    return;
+                default:
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid input. Please enter a number.");
+        }
+        ShowMenu();
     }
 }

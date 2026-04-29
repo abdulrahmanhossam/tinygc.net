@@ -33,6 +33,11 @@ public class GC
     /// </summary>
     public static GC Instance => _instance ??= new GC();
 
+    /// 
+    /// Instance Value
+    /// 
+    public static int InstanceValue = 1;
+
     /// <summary>
     /// Our heap.
     /// </summary>
@@ -86,6 +91,17 @@ public class GC
         Console.WriteLine($"[GC] Allocated {typeof(TObj).Name} at offset 0x{addr:x}");
 
         return obj;
+    }
+
+    ///
+    /// Allocate object
+    /// 
+    public void AllocateObject()
+    {
+        var obj1 = GC.Instance.New<MyData>();
+        obj1.Value = GC.InstanceValue++;
+        obj1.Name = "object";
+        Console.WriteLine($"Allocated {obj1.Name} with value {obj1.Value}");
     }
 
     /// <summary>
