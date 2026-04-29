@@ -30,8 +30,11 @@ public class Heap
     /// Current allocation position (bump pointer).
     /// </summary>
     private int _allocPosition;
-
+    ///
+    /// List of free blocks (for reuse) 
     /// <summary>
+    private List<int> _freeAllocPositions;
+
     /// All objects currently allocated.
     /// We track this so the GC knows what's in the heap.
     /// </summary>
@@ -43,6 +46,7 @@ public class Heap
     public Heap()
     {
         _memory = new byte[HEAP_SIZE];
+        _freeAllocPositions = new List<int>();
         _allocPosition = 0;
         Console.WriteLine($"[Heap] Initialized: {HEAP_SIZE / 1024}KB heap");
     }
@@ -55,6 +59,15 @@ public class Heap
     {
         // Align to 8 bytes
         size = (size + 7) & ~7;
+
+        // Check if any previously allocated free blocks can be reused
+        if(_freeAllocPositions.Count > 0)
+        {
+            int reuseAddress = _freeAllocPositions[0];
+            Console.WriteLine($"[Heap] Allocated {size} bytes at offset 0x{reuseAddress:x}");
+            _freeAllocPositions.RemoveAt(0);
+            return reuseAddress;
+        }
 
         // Check if we have space
         if (_allocPosition + size > HEAP_SIZE)
@@ -114,6 +127,7 @@ public class Heap
     /// </summary>
     public void Free(GCObject obj)
     {
+        _freeAllocPositions.Add(obj.Address);
         Console.WriteLine($"[Heap] Freed object at offset 0x{obj.Address:x}");
     }
 
