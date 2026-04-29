@@ -134,6 +134,6 @@ public class Heap
     /// </summary>
     public void PrintStats()
     {
-        Console.WriteLine($"[Heap] Stats: {_allocPosition}/{HEAP_SIZE} bytes used, {_objects.Count} objects");
+        Console.WriteLine($"[Heap] Stats: {_allocPosition}/{HEAP_SIZE} bytes used {((double)_allocPosition/HEAP_SIZE).ToString("P4")}, {_objects.Count} objects");
     }
 }
