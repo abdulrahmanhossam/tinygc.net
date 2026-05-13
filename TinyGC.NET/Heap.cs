@@ -144,11 +144,16 @@ public class Heap
     }
 
     /// <summary>
-    /// Print heap statistics.
+    /// Print heap statistics: bytes used, bytes available, percentage used,
+    /// and the number of live objects.
     /// </summary>
     public void PrintStats()
     {
-        Console.WriteLine($"[Heap] Stats: {_allocPosition}/{HEAP_SIZE} bytes used, {_objects.Count} objects");
-        Console.WriteLine($"Total objects allocated: {_totalObjects}, Total objects freed: {_freedObjects}, Current objects in memory: {_objects.Count}");
+        int used = _allocPosition;
+        int available = HEAP_SIZE - used;
+        double percent = (double)used / HEAP_SIZE * 100.0;
+        Console.WriteLine(
+            $"[Heap] Stats: {used}/{HEAP_SIZE} bytes used " +
+            $"({percent:F4}%), {available} bytes available, {_objects.Count} objects");
     }
 }
